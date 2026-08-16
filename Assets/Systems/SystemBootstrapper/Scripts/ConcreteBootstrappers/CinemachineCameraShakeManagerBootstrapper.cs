@@ -1,0 +1,3 @@
+﻿using GoncaloMCOliveira.CinemachineCameraShake;
+
+public sealed class CinemachineCameraShakeManagerBootstrapper : GenericSystemBootstrapper<CameraShakeManager> {}

@@ -1,0 +1,68 @@
+{
+    "version": 1,
+    "name": "SkippingAction",
+    "maps": [
+        {
+            "name": "SplashVideoSkipping",
+            "id": "bfd2ee87-98e6-46da-8ec7-fc3d6ee6d009",
+            "actions": [
+                {
+                    "name": "Skip",
+                    "type": "Button",
+                    "id": "12344417-43d1-4411-98b6-5b8abfe51810",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "fe542d9e-d978-4319-9c0c-779ba9813eb2",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f6ad8d4d-6191-4ccd-8579-35393d295650",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de7046a4-e0c7-4bd1-a146-dbd08327f3d2",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8c198c38-e40c-4197-a08f-64f5fe554c64",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
