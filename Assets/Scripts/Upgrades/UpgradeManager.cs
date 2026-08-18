@@ -9,7 +9,11 @@ public class UpgradeManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private LogoController logo;
     [SerializeField] private Health logoHealth;
-
+    [SerializeField] private LogoAura logoAura;
+    [SerializeField] private LogoShield logoShield;
+    [SerializeField] private LogoTrail logoTrail;
+    [SerializeField] private CursorAbilities cursorAbilities;
+    
     [Header("All Upgrades")]
     [SerializeField] private List<UpgradeData> allUpgrades;
 
@@ -30,6 +34,19 @@ public class UpgradeManager : MonoBehaviour
         }
 
         Instance = this;
+    }
+
+    private void Start() {
+        UnlockAll();
+    }
+
+    private void UnlockAll() {
+        UnlockLogoAura();
+        UnlockLogoShield();
+        UnlockLogoTrail();
+        UnlockGroupCollect();
+        UnlockGroupFreeze();
+        UnlockProjectileDelete();
     }
 
     public bool PurchaseUpgrade(UpgradeData upgrade)
@@ -219,19 +236,41 @@ public class UpgradeManager : MonoBehaviour
 
     #region Upgrade Effects
 
-    private void UnlockLogoAura()
-    {
-        Debug.Log("Logo Aura Unlocked!");
+    private void UnlockLogoAura() {
+        if (logoAura == null) {
+            Debug.LogWarning(
+                "Logo Aura reference is missing!"
+            );
+            return;
+        }
+
+        logoAura.Unlock();
     }
 
-    private void UnlockLogoTrail()
-    {
-        Debug.Log("Logo Trail Unlocked!");
+    private void UnlockLogoTrail() {
+        
+        if (logoTrail == null) {
+            Debug.LogWarning(
+                "Logo Trail reference is missing!"
+            );
+
+            return;
+        }
+
+        logoTrail.Unlock();
     }
 
-    private void UnlockLogoShield()
-    {
-        Debug.Log("Logo Shield Unlocked!");
+    private void UnlockLogoShield() {
+        
+        if (logoShield == null) {
+            Debug.LogWarning(
+                "Logo Shield reference is missing!"
+            );
+
+            return;
+        }
+
+        logoShield.Unlock();
     }
 
     private void UpgradeCursorCooldown(
@@ -246,23 +285,44 @@ public class UpgradeManager : MonoBehaviour
 
     private void UnlockGroupCollect()
     {
-        Debug.Log(
-            "Group Collect Unlocked!"
-        );
+        if (cursorAbilities == null)
+        {
+            Debug.LogWarning(
+                "Cursor Abilities reference is missing!"
+            );
+
+            return;
+        }
+
+        cursorAbilities.UnlockGroupCollect();
     }
 
     private void UnlockGroupFreeze()
     {
-        Debug.Log(
-            "Group Freeze Unlocked!"
-        );
+        if (cursorAbilities == null)
+        {
+            Debug.LogWarning(
+                "Cursor Abilities reference is missing!"
+            );
+
+            return;
+        }
+
+        cursorAbilities.UnlockGroupFreeze();
     }
 
     private void UnlockProjectileDelete()
     {
-        Debug.Log(
-            "Projectile Delete Unlocked!"
-        );
+        if (cursorAbilities == null)
+        {
+            Debug.LogWarning(
+                "Cursor Abilities reference is missing!"
+            );
+
+            return;
+        }
+
+        cursorAbilities.UnlockDeleteProjectile();
     }
 
     #endregion

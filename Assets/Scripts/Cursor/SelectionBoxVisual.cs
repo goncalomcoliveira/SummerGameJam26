@@ -19,11 +19,7 @@ public class SelectionBoxVisual : MonoBehaviour {
         // Move the visual to the center
         transform.position = center;
 
-        // Scale it to the size of the selection
-        transform.localScale = new Vector3(
-            size.x,
-            size.y,
-            1f
-        );
+        // Resize the sliced sprite instead of scaling it
+        spriteRenderer.size = size;
     }
 }

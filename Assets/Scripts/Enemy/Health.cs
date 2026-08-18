@@ -21,10 +21,17 @@ public class Health : MonoBehaviour {
         if (isDead)
             return;
 
+        var blockers =
+            GetComponents<IDamageBlocker>();
+
+        foreach (IDamageBlocker blocker in blockers) {
+            if (blocker.TryBlockDamage())
+                return;
+        }
+
         currentHealth -= amount;
 
-        if (currentHealth <= 0f)
-        {
+        if (currentHealth <= 0f) {
             Die();
         }
     }

@@ -1,14 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class BoxSelector : MonoBehaviour {
-    
+public class BoxSelector : MonoBehaviour
+{
     [Header("References")]
     [SerializeField] private Camera gameCamera;
     [SerializeField] private SelectionBoxVisual selectionBoxPrefab;
 
     [Header("Settings")]
     [SerializeField] private float dragThreshold = 0.2f;
+    [SerializeField] private float minimumSelectionSize = 0.1f;
 
     private Vector2 startPosition;
     private bool isMouseDown;
@@ -16,7 +18,11 @@ public class BoxSelector : MonoBehaviour {
 
     private SelectionBoxVisual activeSelectionBox;
 
-    private void Update() {
+    public event Action<Bounds> OnSelectionCompleted;
+    public event Action<Vector2> OnClick;
+
+    private void Update()
+    {
         if (Mouse.current == null)
             return;
 
@@ -25,7 +31,8 @@ public class BoxSelector : MonoBehaviour {
         HandleMouseUp();
     }
 
-    private void HandleMouseDown() {
+    private void HandleMouseDown()
+    {
         if (!Mouse.current.leftButton.wasPressedThisFrame)
             return;
 
@@ -35,26 +42,35 @@ public class BoxSelector : MonoBehaviour {
         isDragging = false;
     }
 
-    private void HandleMouseHold() {
+    private void HandleMouseHold()
+    {
         if (!isMouseDown || !Mouse.current.leftButton.isPressed)
             return;
 
-        var currentPosition = GetMouseWorldPosition();
+        Vector2 currentPosition =
+            GetMouseWorldPosition();
 
-        // Don't start dragging until the mouse has moved far enough.
-        if (!isDragging) {
-            var distance =
+        // Don't start dragging until the mouse
+        // has moved far enough.
+        if (!isDragging)
+        {
+            float distance =
                 Vector2.Distance(
                     startPosition,
                     currentPosition
                 );
 
-            if (distance >= dragThreshold) {
+            if (distance >= dragThreshold)
+            {
                 StartDragging();
             }
         }
 
-        if (isDragging && activeSelectionBox != null) {
+        if (
+            isDragging &&
+            activeSelectionBox != null
+        )
+        {
             activeSelectionBox.UpdateBox(
                 startPosition,
                 currentPosition
@@ -62,21 +78,22 @@ public class BoxSelector : MonoBehaviour {
         }
     }
 
-    private void HandleMouseUp() {
+    private void HandleMouseUp()
+    {
         if (!Mouse.current.leftButton.wasReleasedThisFrame)
             return;
 
-        var endPosition = GetMouseWorldPosition();
+        Vector2 endPosition =
+            GetMouseWorldPosition();
 
-        if (isDragging) {
-            SelectObjects(
-                startPosition,
-                endPosition
-            );
+        if (isDragging)
+        {
+            CompleteSelection(endPosition);
 
             StopDragging();
         }
-        else {
+        else
+        {
             HandleClick(endPosition);
         }
 
@@ -84,7 +101,8 @@ public class BoxSelector : MonoBehaviour {
         isDragging = false;
     }
 
-    private void StartDragging() {
+    private void StartDragging()
+    {
         isDragging = true;
 
         activeSelectionBox = Instantiate(
@@ -94,19 +112,77 @@ public class BoxSelector : MonoBehaviour {
         );
     }
 
-    private void StopDragging() {
-        if (activeSelectionBox != null) {
-            Destroy(activeSelectionBox.gameObject);
+    private void CompleteSelection(
+        Vector2 endPosition
+    )
+    {
+        Bounds selectionBounds =
+            CreateSelectionBounds(
+                startPosition,
+                endPosition
+            );
+
+        // Ignore extremely small selections.
+        if (
+            selectionBounds.size.x <
+                minimumSelectionSize ||
+            selectionBounds.size.y <
+                minimumSelectionSize
+        )
+        {
+            return;
+        }
+
+        OnSelectionCompleted?.Invoke(
+            selectionBounds
+        );
+    }
+
+    private Bounds CreateSelectionBounds(
+        Vector2 start,
+        Vector2 end
+    )
+    {
+        Vector2 min = new Vector2(
+            Mathf.Min(start.x, end.x),
+            Mathf.Min(start.y, end.y)
+        );
+
+        Vector2 max = new Vector2(
+            Mathf.Max(start.x, end.x),
+            Mathf.Max(start.y, end.y)
+        );
+
+        Vector2 center =
+            (min + max) * 0.5f;
+
+        Vector2 size =
+            max - min;
+
+        return new Bounds(
+            center,
+            size
+        );
+    }
+
+    private void StopDragging()
+    {
+        if (activeSelectionBox != null)
+        {
+            Destroy(
+                activeSelectionBox.gameObject
+            );
+
             activeSelectionBox = null;
         }
     }
 
-    private Vector2 GetMouseWorldPosition() {
-        
-        var mouseScreenPosition =
+    private Vector2 GetMouseWorldPosition()
+    {
+        Vector2 mouseScreenPosition =
             Mouse.current.position.ReadValue();
 
-        var worldPosition =
+        Vector3 worldPosition =
             gameCamera.ScreenToWorldPoint(
                 new Vector3(
                     mouseScreenPosition.x,
@@ -121,8 +197,11 @@ public class BoxSelector : MonoBehaviour {
         );
     }
 
-    private void HandleClick(Vector2 position) {
-        var hit =
+    private void HandleClick(Vector2 position)
+    {
+        OnClick?.Invoke(position);
+
+        RaycastHit2D hit =
             Physics2D.Raycast(
                 position,
                 Vector2.zero
@@ -131,36 +210,12 @@ public class BoxSelector : MonoBehaviour {
         if (hit.collider == null)
             return;
 
-        var coin =
+        Coin coin =
             hit.collider.GetComponent<Coin>();
 
-        if (coin != null) {
+        if (coin != null)
+        {
             coin.Collect();
-        }
-    }
-
-    private void SelectObjects(
-        Vector2 start,
-        Vector2 end
-    ) {
-        var center = (start + end) / 2f;
-
-        var size = new Vector2(
-            Mathf.Abs(end.x - start.x),
-            Mathf.Abs(end.y - start.y)
-        );
-
-        var hits =
-            Physics2D.OverlapBoxAll(
-                center,
-                size,
-                0f
-            );
-
-        foreach (var hit in hits) {
-            Debug.Log(
-                "Selected: " + hit.name
-            );
         }
     }
 }
