@@ -56,7 +56,9 @@ public class CursorAbilities : MonoBehaviour
         }
     }
     
-    private void DeleteProjectile(Vector2 position)
+    private void DeleteProjectile(
+        Vector2 position
+    )
     {
         Collider2D hit =
             Physics2D.OverlapPoint(
@@ -67,7 +69,13 @@ public class CursorAbilities : MonoBehaviour
         if (hit == null)
             return;
 
-        Destroy(hit.gameObject);
+        Projectile projectile =
+            hit.GetComponent<Projectile>();
+
+        if (projectile != null)
+        {
+            projectile.Delete();
+        }
     }
 
     private void HandleSelectionCompleted(

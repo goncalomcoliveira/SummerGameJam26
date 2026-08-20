@@ -52,6 +52,14 @@ public class Health : MonoBehaviour {
                 );
         }
     }
+    
+    public void ApplyMaxHealthMultiplier(
+        float multiplier
+    )
+    {
+        maxHealth *= multiplier;
+        currentHealth = maxHealth;
+    }
 
     private void Die() {
         if (isDead)
