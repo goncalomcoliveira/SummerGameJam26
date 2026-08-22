@@ -41,9 +41,9 @@ public class UpgradeManager : MonoBehaviour
     }
 
     private void UnlockAll() {
-        UnlockLogoAura();
-        UnlockLogoShield();
-        UnlockLogoTrail();
+        //UnlockLogoAura();
+        //UnlockLogoShield();
+        //UnlockLogoTrail();
         UnlockGroupCollect();
         UnlockGroupFreeze();
         UnlockProjectileDelete();
